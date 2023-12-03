@@ -1,12 +1,19 @@
 #include <iostream>
 #include "MacUILib.h"
 #include "objPos.h"
+#include "GameMechs.h"
+#include "Player.h"
+#include "objPosArrayList.h"
+#include <time.h>
+
 
 
 using namespace std;
-
 #define DELAY_CONST 100000
 
+class player;
+GameMechs* myGM = nullptr;
+Player* myPlayer = nullptr;
 bool exitFlag;
 
 void Initialize(void);
@@ -23,7 +30,7 @@ int main(void)
 
     Initialize();
 
-    while(exitFlag == false)  
+    while(!myGM -> getExitFlagStatus())  
     {
         GetInput();
         RunLogic();
@@ -40,23 +47,144 @@ void Initialize(void)
 {
     MacUILib_init();
     MacUILib_clearScreen();
+    srand(unsigned int time(NULL));
+
+    // [TODO] Initialize any global variables as required.
 
     exitFlag = false;
+
+    // [TODO] Allocated heap memory for on-demand variables as required.  Initialize them as required.
+
+    myGM = new GameMechs(26,13)
+    myPlayer = new Player(myGM)
+
+    objPos playerPos;
+    objPosArrayList* body = myPlayer -> getPlayerPosList();
+    if  (body -> getSize() && body > 0){
+
+        body -> getHeadElement(playerPos);
+    }
+
+    myGM -> generateFood(&playerPos, body);  
+
 }
 
 void GetInput(void)
 {
-   
+    myGM -> getInput();
 }
+
+
 
 void RunLogic(void)
 {
+
+    myplayer -> updatePlayerDir();
+    myplayer -> movePlayer();
+
+// snake's head 
+    objPos head;
+    objPosArrayList* body = myPlayer -> getPlayerPosList();
+    if (body -> getSize() && body > 0)
+    {
+        body -> getHeadElement(head);
+    }
+
+// has snake eaten?
+    objPos food;
+    myGM -> getFoodPos(food);
+    if (head.x == food.x && head.y == food.y){
+
+        myGM -> generateFood(&head, body);
+        myPlayer -> setHasAteFood(true);
+    }
+    myGM -> clearInput();
     
 }
+    
+  
+
 
 void DrawScreen(void)
 {
-    MacUILib_clearScreen();    
+    MacUILib_clearScreen();   
+
+
+
+    objPosArrayList* body = myPlayer -> getPlayerPosList();
+    objPos food; 
+    myGM -> getFoodPos(food);
+    int i, j, m;
+
+    for (i=0;i< myGM -> getBoardSizeY(); i++)
+    {
+
+        for (j=0; j< myGM->getBoardSizeX; j++)
+        {
+            
+            bool draw = false;
+
+            //debug
+
+            for (m=0; m< body->getSize(); m++){
+
+                objPos part;
+                body -> getElement(part, m);
+
+                if (i = part.y && j == part.x){
+
+                    MacUILib_printf("%c", part.symbol);
+                    draw = true;
+                    break;
+                }
+            }
+
+            if (draw) continue;
+
+            //border walls
+
+            if (i == 0 || j== 0 || i == myGM->getBoardSizeY() -1 || j == myGM->getBoardSizeX() -1)
+            {
+                MacUILib_printf("%c", '#');
+            }
+
+            //food
+
+            else if(i == food.y && j = food.x)
+            {
+
+                MacUILib_printf("%c", food.symbol);
+            
+            }
+
+            else
+            {
+
+                MacUILib_printf("");
+            }
+        }
+
+            printf("\n");
+    }
+
+
+    if (myGM -> getLoseFlag() == false)
+    {
+
+        MacUILib_printf("Positon of Food: <%d, %d> \n", food.x, food.y);
+        MacUILib_printf("Score: %d\n", myplayer ->getScore());
+    }
+
+    else if(myGM -> getLoseFlag() == true)
+    {
+        MacUILib_printf("\n\nLOSERRRRR");
+        MacUILib_printf("Final Game Score: %d\n", myPlayer-> getScore());
+        MacUILib_printf("Press ] to exit the game");
+        myGM-> setExitTrue();
+
+    }
+
+
 
 }
 
@@ -68,7 +196,10 @@ void LoopDelay(void)
 
 void CleanUp(void)
 {
+
+    delete myPlayer;
+    delete myGM;
+
     MacUILib_clearScreen();    
-  
     MacUILib_uninit();
 }
