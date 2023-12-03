@@ -164,7 +164,7 @@ void DrawScreen(void)
             }
         }
 
-            printf("\n");
+            MacUILib_printf("\n");
     }
 
 

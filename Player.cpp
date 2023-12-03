@@ -60,27 +60,27 @@ void Player::updatePlayerDir()
                 mainGameMechsRef->setExitTrue();
                 break;
             case 'w':
-                if (myFSMMode != DOWN)
+                if (myDir != DOWN)
                 {
-                    myFSMMode = UP;
+                    myDir = UP;
                 }
                 break;
             case 's':
-                if (myFSMMode != UP)
+                if (myDir != UP)
                 {
-                    myFSMMode = DOWN;
+                    myDir = DOWN;
                 }
                 break;
             case 'a':
-                if (myFSMMode != RIGHT)
+                if (myDir != RIGHT)
                 {
-                    myFSMMode = LEFT;
+                    myDir = LEFT;
                 }
                 break;
             case 'd':
-                if (myFSMMode != LEFT)
+                if (myDir != LEFT)
                 {
-                    myFSMMode = RIGHT;
+                    myDir = RIGHT;
                 }
                 break;  
         }     
@@ -96,31 +96,33 @@ void Player::movePlayer()
 
     objPos newPos;
 
-
-    if (myFSMMode == RIGHT) {
-        
-        
+    if (myDir == RIGHT) 
+    {
         newPos.x = (newPos.x + 1);  // Wrap around when reaching the boundary
         if (newPos.x > ColSize - 2){
             newPos.x = 1;
         }
     }
-    if (myFSMMode == LEFT) {
+    if (myDir == LEFT) 
+    {
         newPos.x = (newPos.x - 1);  // Wrap around when reaching the boundary
         if (newPos.x < 1){
             newPos.x = ColSize - 2;
         }
     }
-    if (myFSMMode == DOWN) {
+    if (myDir == DOWN) 
+    {
         newPos.y = (newPos.y + 1);  // Wrap around when reaching the boundary
         if (newPos.y > RowSize - 2)
             newPos.y = 1;
     }
-    if (myFSMMode == UP) {
+    if (myDir == UP) 
+    {
         newPos.y = (newPos.y - 1);  // Wrap around when reaching the boundary
-        if (newPos.y < 1){
+        if (newPos.y < 1)
+        {
             newPos.y = RowSize - 2;
-    }
+        }
     }  
 
 
