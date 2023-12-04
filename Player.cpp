@@ -16,21 +16,19 @@ Player::Player(GameMechs* thisGMRef)
     
     objPos startPos(midX, midY, '?');
 
-    playerPoslist = new objPosArrayList();
-    playerPosList -> insertHead(startPos);
-    hasAteFood = false;
+    playerPosList = new objPosArrayList();
+    playerPosList->insertHead(startPos);
+    ateFood = false;
 
 }
 
 
 
-
-
-PLayer:: getScore() const 
+int Player:: getScore() const 
 {
-    if (playerPosList!= nullptr){
+    if (playerPosList != nullptr){
 
-        return playerPos->getSize() - 1; // -1 to exclude the head
+        return playerPosList->getSize() - 1; // -1 to exclude the head
     }
     return 0; //if player pos is empty/null
 
@@ -39,13 +37,13 @@ PLayer:: getScore() const
 Player::~Player()
 {
     // delete any heap members here
-    delete playerPoslist;
+    delete playerPosList;
 }
 
-objArrayList* Player::getPlayerPos()
+objPosArrayList* Player::getPlayerPosList()
 {
     // return the reference to the playerPos arrray list
-    return playerPoslist;
+    return playerPosList;
 }
 
 
@@ -54,10 +52,10 @@ void Player::updatePlayerDir()
     // PPA3 input processing logic 
 
     char input = mainGameMechsRef->getInput();
-        switch(input)
+    switch(input)
         {                      
             case ']':  // exit
-                mainGameMechsRef->setExitTrue();
+                mainGameMechsRef -> setExitTrue();
                 break;
             case 'w':
                 if (myDir != DOWN)
@@ -82,7 +80,10 @@ void Player::updatePlayerDir()
                 {
                     myDir = RIGHT;
                 }
-                break;  
+                break; 
+
+            default:
+                break; 
         }     
 
         mainGameMechsRef->clearInput();
@@ -90,61 +91,78 @@ void Player::updatePlayerDir()
 
 }
 
+
 void Player::movePlayer()
 {
-    // PPA3 Finite State Machine logic
-
     objPos newPos;
+    playerPosList->getHeadElement(newPos);
+
 
     if (myDir == RIGHT) 
     {
-        newPos.x = (newPos.x + 1);  // Wrap around when reaching the boundary
-        if (newPos.x > ColSize - 2){
-            newPos.x = 1;
-        }
+        newPos.x = (newPos.x + 1) % (mainGameMechsRef->getBoardSizeX() -2);  
     }
-    if (myDir == LEFT) 
+    else if (myDir == LEFT) 
     {
-        newPos.x = (newPos.x - 1);  // Wrap around when reaching the boundary
-        if (newPos.x < 1){
-            newPos.x = ColSize - 2;
-        }
+        newPos.x = (newPos.x - 1) % (mainGameMechsRef->getBoardSizeX() - 2) % (mainGameMechsRef -> getBoardSizeX() -2);  
+        
     }
-    if (myDir == DOWN) 
+    else if (myDir == DOWN) 
     {
-        newPos.y = (newPos.y + 1);  // Wrap around when reaching the boundary
-        if (newPos.y > RowSize - 2)
-            newPos.y = 1;
+       newPos.y = (newPos.y + 1) % (mainGameMechsRef->getBoardSizeY() - 2);  
+    
     }
-    if (myDir == UP) 
+    else if (myDir == UP) 
     {
-        newPos.y = (newPos.y - 1);  // Wrap around when reaching the boundary
-        if (newPos.y < 1)
-        {
-            newPos.y = RowSize - 2;
-        }
-    }  
+        newPos.y = (newPos.y - 1) % (mainGameMechsRef->getBoardSizeY() - 2) % (mainGameMechsRef -> getBoardSizeY() - 2);  
+    } 
 
+
+// if pos of snake goes over border
+    if (newPos.x <=0)
+    {
+        newPos.x += (mainGameMechsRef -> getBoardSizeX() -2);
+    }
+
+    if (newPos.y <=0) 
+    {
+        newPos.y += (mainGameMechsRef -> getBoardSizeY() -2);
+    }
+
+    if (selfCollision(newPos))
+    {
+        mainGameMechsRef -> setLoseFlag ();
+        return;
+    }
+
+    playerPosList -> insertHead(newPos);
+   
+    if (!ateFood)
+    {
+        playerPosList -> removeTail();
+    }
+    else
+    {
+        ateFood = false;
+    }
 
 }
-
 
 
 void Player:: setHasAteFood(bool ate)
 {
-    hasAteFood = ate;
+    ateFood = ate;
 }
 
 
-bool Player:: selfCollision(const objPos& newHeadPos) const{
+bool Player::selfCollision(const objPos& newHeadPos) const{
     int i;
     objPos part;
-    for (i=0; i<playerPosList->getSize(); ++i)
+
+    for (i=1; i<playerPosList->getSize(); ++i)
     {
         playerPosList->getElement(part, i);
-
         if (part.x == newHeadPos.x && part.y == newHeadPos.y) // if head and part are the same pos, they collided
-        
         {
             return true; //this means there is a collision
         }

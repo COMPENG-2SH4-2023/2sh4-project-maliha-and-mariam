@@ -25,7 +25,7 @@ class GameMechs
         
         int boardSizeX;
         int boardSizeY;
-        objPos posFood;
+        objPos food;
 
     public:
         GameMechs();
@@ -43,6 +43,9 @@ class GameMechs
 
         int getBoardSizeX();
         int getBoardSizeY();
+
+        void generateFood(objPos *playerPos, objPosArrayList *snake);
+        void getPosFood(objPos &returnPos);
       
 
 };
