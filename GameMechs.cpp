@@ -61,7 +61,7 @@ void GameMechs::clearInput()
 }
 
 
-
+// generate food for board
 void GameMechs::generateFood(objPos *playerPos, objPosArrayList *snake)
 {
     int Xnew, Ynew;
@@ -97,11 +97,10 @@ void GameMechs::generateFood(objPos *playerPos, objPosArrayList *snake)
         // Add more conditions here if necessary, like checking against other game elements
     }
 
-    food.setObjPos(Xnew, Ynew, 'F'); // 'F' for food
+    food.setObjPos(Xnew, Ynew, 'F'); // for food
 }
 
-
-
+//get posiition of food
 void GameMechs::getPosFood(objPos &returnPos)
 {
     returnPos = food;

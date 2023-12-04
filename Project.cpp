@@ -68,20 +68,21 @@ void Initialize(void)
 
 }
 
+//function that gets user inout 
 void GetInput(void)
 {
     myGM -> getInput();
 }
 
 
-
 void RunLogic(void)
 {
 
+// updating player's direction and movement
     myPlayer->updatePlayerDir();
     myPlayer->movePlayer();
 
-// snake's head 
+//has snake eaten?
     objPos head;
     objPosArrayList* body = myPlayer -> getPlayerPosList();
     if (body && body->getSize() > 0)
@@ -89,7 +90,6 @@ void RunLogic(void)
         body->getHeadElement(head);
     }
 
-// has snake eaten?
     objPos food;
     myGM -> getPosFood(food);
     if (head.x == food.x && head.y == food.y){
@@ -106,7 +106,7 @@ void RunLogic(void)
 
 void DrawScreen(void)
 {
-    MacUILib_clearScreen();   
+    MacUILib_clearScreen();   //clear the screen 
 
 
     objPosArrayList* body = myPlayer->getPlayerPosList();
@@ -114,6 +114,7 @@ void DrawScreen(void)
     myGM->getPosFood(food);
     int i, j, m;
 
+//draw game elements on the screen 
     for (i=0; i < myGM->getBoardSizeY(); i++)
     {
 
@@ -139,7 +140,7 @@ void DrawScreen(void)
 
             if (draw) continue;
 
-            //border walls
+            // draw border walls
 
             if (i == 0 || j== 0 || i == myGM->getBoardSizeY() - 1 || j == myGM->getBoardSizeX() - 1)
             {
@@ -153,6 +154,8 @@ void DrawScreen(void)
                 MacUILib_printf("%c", food.symbol);
             
             }
+            
+            //rest of the board
             else
             {
 

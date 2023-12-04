@@ -2,7 +2,7 @@
 
 // Paste your CUTE Tested implementation here.
 
-
+//contructor 
 objPosArrayList:: objPosArrayList(): sizeList(0), sizeArray(200){
     int i;
     aList = new objPos[sizeArray];
@@ -11,11 +11,14 @@ objPosArrayList:: objPosArrayList(): sizeList(0), sizeArray(200){
     }
 }
 
-objPosArrayList:: ~objPosArrayList()
+//destructor
+objPosArrayList:: ~objPosArrayList() 
 {
     delete[] aList;
 }
 
+
+// returns list size
 int objPosArrayList:: getSize()
 {
     return sizeList;
@@ -24,14 +27,14 @@ int objPosArrayList:: getSize()
 void objPosArrayList:: insertHead(objPos thisPos)
 {
     if (sizeList >= sizeArray){
-        resizeArray(sizeArray *2);
+        resizeArray(sizeArray *2); //double array list
     }
     int i;
     for (i = sizeList; i>0; i--)
     {
-        aList[i] = aList[i - 1];
+        aList[i] = aList[i - 1]; //make space for new elements
     }
-    aList[0] = thisPos;
+    aList[0] = thisPos; //new element head
     sizeList++;
 
 }
@@ -40,11 +43,11 @@ void objPosArrayList:: insertHead(objPos thisPos)
 void objPosArrayList:: insertTail(objPos thisPos){
 
     if (sizeList >= sizeArray) {
-    resizeArray(sizeArray * 2); // Double the size
+    resizeArray(sizeArray * 2); // Double the size if full
     }
     
-    aList[sizeList] = thisPos;
-    sizeList++;
+    aList[sizeList] = thisPos; //shift element to remove head
+    sizeList++; //decrease list size
 
 }
 
@@ -62,6 +65,7 @@ void objPosArrayList:: removeHead(){
 }
 
 
+//same as removeHead fucnction
 
 void objPosArrayList::removeTail() {
     if (sizeList > 0) {
@@ -97,6 +101,8 @@ void objPosArrayList::getElement(objPos &returnPos, int index){
 }
 
 
+//resize array list 
+
 void objPosArrayList::resizeArray(int newCapacity) {
     objPos* newList = new objPos[newCapacity];
     
@@ -105,7 +111,7 @@ void objPosArrayList::resizeArray(int newCapacity) {
         newList[i] = aList[i];
     }
     delete[] aList;
-    aList = newList;
-    sizeArray = newCapacity;
+    aList = newList; //update pointer to new array 
+    sizeArray = newCapacity; //update size of array
 }
 
